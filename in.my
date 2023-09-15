@@ -1,0 +1,36 @@
+# Initialization
+units           metal
+boundary        p p f
+atom_style      atomic
+processors      * * 1
+variable T equal 670.0
+# System and atom definition
+read_data       Cu_1621.data    
+variable        tdamp equal 0.1
+variable        seed index 826626413
+# Potential
+
+pair_style       mlip load_from=pot.almtp extrapolation_control=true extrapolation_control:threshold_break=10 extrapolation_control:threshold_save=2 extrapolation_control:save_extrapolative_to=out/preselected.cfg
+pair_coeff       * *
+
+group           bottom id 1:540
+group           top id 1081:1620
+group           middle id 541:1080 
+group           addatom id 1621
+neighbor        3 bin
+neigh_modify    every 1 delay 5 check yes
+timestep        0.001
+velocity        addatom set -0.033 0.05 -13  #Angstroms/picosecond  100m/s
+velocity        top create ${T} ${seed} dist gaussian
+fix             1 addatom nve
+fix             2 top nve
+fix             freeze bottom setforce 0.0 0.0 0.0
+fix             5 top wall/reflect zhi EDGE#wall reflection
+fix             6 middle nvt temp ${T} ${T} ${tdamp}
+fix             7 all wall/reflect zlo EDGE#wall reflection
+thermo_style    custom step temp 
+thermo_modify   lost error
+thermo          100
+dump            1 all custom 1000 dump.trj id type x y z
+run             5000
+reset_timestep  0
