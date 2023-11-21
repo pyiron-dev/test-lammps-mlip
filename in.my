@@ -10,7 +10,7 @@ variable        tdamp equal 0.1
 variable        seed index 826626413
 # Potential
 
-pair_style       mlip load_from=pot.almtp extrapolation_control=true extrapolation_control:threshold_break=10 extrapolation_control:threshold_save=2 extrapolation_control:save_extrapolative_to=out/preselected.cfg
+pair_style       mlip mlip.ini
 pair_coeff       * *
 
 group           bottom id 1:540
