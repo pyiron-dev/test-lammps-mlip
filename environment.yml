@@ -1,7 +1,7 @@
 channels:
 - conda-forge
 dependencies:
-- python
+- python =3.11
 - notebook
 - lammps
 - mlip =2.0
